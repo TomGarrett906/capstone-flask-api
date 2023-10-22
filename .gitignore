@@ -1,0 +1,4 @@
+.env
+gig_trakr/
+__pycache__/
+migrations/
