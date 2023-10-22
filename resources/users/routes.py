@@ -9,6 +9,10 @@ from . import bp
 from resources.users.models import UserModel
 from db import users
 
+#-----------------------------------------
+
+
+
 
 @bp.route('/')
 class Users(MethodView):
@@ -42,14 +46,8 @@ class Users(MethodView):
             user.delete()
             return {"message": f"{user_data['username']} deleted"}, 202
         abort(400, message="Username or Password Invalid")
- 
 
-
-
-
-
-
-
+#-----------------------------------------
 
 
 

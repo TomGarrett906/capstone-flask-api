@@ -2,25 +2,26 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
-
-
 from schemas import GigSchema
 from resources.users.models import GigModel
 from . import bp
 from db import gigs
+#-----------------------------------------
+
 
 
 @bp.route('/')
 class Gigs(MethodView):
 
-#Show Gig
+# SHOW GIGS
 
     # @jwt_required()
     @bp.response(200, GigSchema(many=True))
     def get(self):
          return GigModel.query.all()
 
-#Add Gig    
+# ADD GIG   
+  
     @bp.arguments(GigSchema)
     @bp.response(201, GigSchema)
     def post(self, gig_data):
@@ -34,7 +35,8 @@ class Gigs(MethodView):
 
 
 
-#Delete Gig
+# DELETE GIG
+
     # @jwt_required()
     # @bp.arguments(AuthUserSchema)
     def delete(self, gig_data, gig_id):    
@@ -46,11 +48,13 @@ class Gigs(MethodView):
             return {"message": f"{gig_data['gigname']} deleted"}, 202
         abort(400, message="gigname or Password Invalid")
  
+#-----------------------------------------
 
 
 
 
-#Show Gig
+#SHOW GIG
+
 @bp.route('/<user_id>')
 class User(MethodView):
     @bp.response(200, GigSchema)
@@ -64,7 +68,10 @@ class User(MethodView):
             return gig
         abort(400, message='Please enter a valid Gig or ID')
 
-#Update Gig
+
+
+#UPDATE GIG
+
     # @bp.jwt_required()
     # @bp.arguments(UpdateUserSchema)
     # @bp.response(202, UpdateUserSchema)          

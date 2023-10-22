@@ -1,6 +1,10 @@
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
+#-----------------------------------------
+
+
+
 class UserModel(db.Model):
     __tablename__ = "users"
     user_id = db.Column(db.Integer, primary_key=True)   
@@ -36,6 +40,10 @@ class UserModel(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+#-----------------------------------------
+
+
 
 
 

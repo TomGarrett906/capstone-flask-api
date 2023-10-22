@@ -30,3 +30,4 @@ class AuthUserSchema(Schema):
     username = fields.Str()
     email = fields.Str()
     password_hash = fields.Str(required = True, load_only = True)
+    role = fields.Str()
