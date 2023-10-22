@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
-from schemas import GigSchema
+from schemas import AuthUserSchema, GigSchema, UpdateUserSchema
 from resources.users.models import GigModel
 from . import bp
 from db import gigs
@@ -26,7 +26,7 @@ class Gigs(MethodView):
     @bp.response(201, GigSchema)
     def post(self, gig_data):
         gig = GigModel()
-        gig.from_dict(gig_data)
+        # gig.from_dict(gig_data)
         try:
             gig.save()
             return gig_data
@@ -37,8 +37,8 @@ class Gigs(MethodView):
 
 # DELETE GIG
 
-    # @jwt_required()
-    # @bp.arguments(AuthUserSchema)
+    @jwt_required()
+    @bp.arguments(AuthUserSchema)
     def delete(self, gig_data, gig_id):    
         gig_id = get_jwt_identity()
         gig = GigModel.query.get(gig_id)
@@ -73,8 +73,8 @@ class User(MethodView):
 #UPDATE GIG
 
     # @bp.jwt_required()
-    # @bp.arguments(UpdateUserSchema)
-    # @bp.response(202, UpdateUserSchema)          
+    @bp.arguments(UpdateUserSchema)
+    @bp.response(202, UpdateUserSchema)          
     def put(self,gig_data, gig_id):
         gig = GigModel.query.get_or_404(gig_id, description="gig not found")
         if gig and gig.check_password(gig_data["password"]):
