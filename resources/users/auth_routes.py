@@ -10,12 +10,12 @@ from .models import UserModel
 
 
 #-REGISTER-USER------------------------------- 
+@bp.route('/register')
 class Register(MethodView):
     
-    @bp.post('/register')
     @bp.arguments(UserSchema)
     @bp.response(201, UserSchema)
-    def register(self, user_data):
+    def post(self, user_data):
         user = UserModel()
         user.from_dict(user_data)
         try:

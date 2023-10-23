@@ -13,7 +13,7 @@ from db import gigs
 @bp.route('/')
 class Gigs(MethodView):
 
-# SHOW GIGS
+# SHOW ALL GIGS
 
     # @jwt_required()
     @bp.response(200, GigSchema(many=True))
@@ -22,65 +22,66 @@ class Gigs(MethodView):
 
 # ADD GIG   
   
+    # @jwt_required()
     @bp.arguments(GigSchema)
-    @bp.response(201, GigSchema)
-    def post(self, gig_data):
-        gig = GigModel()
-        # gig.from_dict(gig_data)
+    @bp.response(200, GigSchema)
+    def post(self, post_data):
+        user_id = get_jwt_identity()
+        gig = GigModel(**post_data, user_id = user_id)
         try:
             gig.save()
-            return gig_data
+            return gig
         except IntegrityError:
-            abort(400, message="Gig already exists")    
-
-
-
-# DELETE GIG
-
-    @jwt_required()
-    @bp.arguments(AuthUserSchema)
-    def delete(self, gig_data, gig_id):    
-        gig_id = get_jwt_identity()
-        gig = GigModel.query.get(gig_id)
- 
-        if gig and gig.gig_name == gig_data['gig_name'] and gig.check_password(gig_data['password']):
-            gig.delete()
-            return {"message": f"{gig_data['gigname']} deleted"}, 202
-        abort(400, message="gigname or Password Invalid")
- 
+            abort(400, message="Invalid User Id")
 #-----------------------------------------
 
 
 
 
-#SHOW GIG
 
 @bp.route('/<user_id>')
-class User(MethodView):
+class Gig(MethodView):  
+
+
+# SHOW GIG
+
+#   @jwt_required()
     @bp.response(200, GigSchema)
     def get(self, gig_id):
-        gig = None
-        if gig_id.isdigit():
-            gig = GigModel.query.get(gig_id)
-        else:
-            gig = GigModel.query.filter_by(gig_name=gig_id).first()
-        if gig:
+        p = GigModel.query.get(gig_id)
+        if p:
+            return p
+        abort(400, message='Invalid Gig ID')
+
+
+
+# UPDATE GIG
+
+    # @jwt_required()
+    @bp.arguments(GigSchema)
+    @bp.response(200, GigSchema)
+    def put(self, gig_data, gig_id):
+        gig = GigModel.query.get(gig_id)
+        if gig and gig_data['body']:
+            user_id = get_jwt_identity()
+        if gig.user_id == user_id:
+            gig.body = gig_data['body']
+            gig.save()
             return gig
-        abort(400, message='Please enter a valid Gig or ID')
+        else:
+            abort(401, message='Unauthorized')
+        abort(400, message='Invalid Gig Data')
 
 
+# DELETE GIG
 
-#UPDATE GIG
-
-    # @bp.jwt_required()
-    @bp.arguments(UpdateUserSchema)
-    @bp.response(202, UpdateUserSchema)          
-    def put(self,gig_data, gig_id):
-        gig = GigModel.query.get_or_404(gig_id, description="gig not found")
-        if gig and gig.check_password(gig_data["password"]):
-            try:
-                gig.from_dict(gig_data)
-                gig.save()
-                return gig
-            except KeyError:
-                abort(400, message="Gig already exists")
+    #   @jwt_required()
+    def delete(self, gig_id):
+        user_id = get_jwt_identity()
+        gig = GigModel.query.get(gig_id)
+        if gig:
+            if gig.user_id == user_id:
+                gig.delete()
+                return {'message' : 'Gig Deleted'}, 202
+            abort(401, message='User doesn\'t have rights')
+        abort(400, message='Invalid Gig ID')
