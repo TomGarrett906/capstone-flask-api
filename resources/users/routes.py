@@ -42,7 +42,7 @@ class Users(MethodView):
         user_id = get_jwt_identity()
         user = UserModel.query.get(user_id)
  
-        if user and user.username == user_data['user_name'] and user.check_password(user_data['password_hash']):
+        if user and user.username == user_data['username'] and user.check_password(user_data['password_hash']):
             user.delete()
             return {"message": f"{user_data['username']} deleted"}, 202
         abort(400, message="Username or Password Invalid")

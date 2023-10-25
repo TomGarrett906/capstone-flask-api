@@ -39,6 +39,6 @@ def login(login_info):
   else:
     user = UserModel.query.filter_by(email=login_info['email']).first()
   if user and user.check_password(login_info['password_hash']):
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.user_id)
     return {'access_token':access_token}
   abort(400, message='Invalid Username Or Password')

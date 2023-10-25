@@ -14,9 +14,10 @@ class GigSchema(Schema):
     gig_name = fields.Str(required=True)
     description = fields.Str(required=True)
     date = fields.Date(required=True)
-    location = fields.Str(required=True)
-    promoter_id = fields.Str(required=True)
-    dj_id = fields.Str(required=True)
+    location = fields.Str(required=True)  
+    # user_id = fields.Str()
+    promoter_id = fields.Str()
+    dj_id = fields.Str()
     
 class UpdateUserSchema(Schema):
     username = fields.Str()

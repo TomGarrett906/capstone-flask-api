@@ -15,24 +15,35 @@ class Gigs(MethodView):
 
 # SHOW ALL GIGS
 
-    # @jwt_required()
+    @jwt_required()
     @bp.response(200, GigSchema(many=True))
     def get(self):
          return GigModel.query.all()
 
 # ADD GIG   
   
-    # @jwt_required()
+    @jwt_required()
     @bp.arguments(GigSchema)
     @bp.response(200, GigSchema)
-    def post(self, post_data):
-        user_id = get_jwt_identity()
-        gig = GigModel(**post_data, user_id = user_id)
+    def post(self, gig_data):
+        promoter_id = get_jwt_identity()
+        print(promoter_id)
+        print(gig_data)
+        gig = GigModel(**gig_data)
         try:
             gig.save()
             return gig
         except IntegrityError:
             abort(400, message="Invalid User Id")
+
+
+
+
+
+
+
+
+            
 #-----------------------------------------
 
 
@@ -45,7 +56,7 @@ class Gig(MethodView):
 
 # SHOW GIG
 
-#   @jwt_required()
+    @jwt_required()
     @bp.response(200, GigSchema)
     def get(self, gig_id):
         p = GigModel.query.get(gig_id)
@@ -57,7 +68,7 @@ class Gig(MethodView):
 
 # UPDATE GIG
 
-    # @jwt_required()
+    @jwt_required()
     @bp.arguments(GigSchema)
     @bp.response(200, GigSchema)
     def put(self, gig_data, gig_id):
@@ -65,12 +76,12 @@ class Gig(MethodView):
         if gig and gig_data['body']:
             user_id = get_jwt_identity()
         if gig.user_id == user_id:
-            gig.body = gig_data['body']
-            gig.save()
-            return gig
+                gig.body = gig_data['body']
+                gig.save()
+                return gig
         else:
-            abort(401, message='Unauthorized')
-        abort(400, message='Invalid Gig Data')
+            
+            abort(400, message='Invalid Gig Data')
 
 
 # DELETE GIG

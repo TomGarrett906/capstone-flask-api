@@ -1,6 +1,17 @@
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
+
+
+#-----------------------------------------
+
+
+roles = db.Table('roles',
+         db.Column('promoter_id', db.Integer, db.ForeignKey('users.user_id')),        
+         db.Column('dj_id', db.Integer, db.ForeignKey('users.user_id'))                     
+)
+
 #-----------------------------------------
 
 
@@ -17,6 +28,17 @@ class UserModel(db.Model):
 
     promoter_gigs = db.relationship('GigModel', foreign_keys='GigModel.promoter_id', backref='promoter_user')
     # dj_gigs = db.relationship('GigModel', foreign_keys='GigModel.dj_id', backref='dj_user')
+    
+    role_type = db.relationship('UserModel', 
+        secondary=roles, 
+        primaryjoin = roles.c.promoter_id == user_id,
+        secondaryjoin = roles.c.dj_id == user_id,
+        backref = db.backref('roles', lazy='dynamic'),
+        lazy='dynamic' 
+  )
+
+
+
 
     def __repr__(self):
         return f"<User: {self.username}>"
@@ -56,9 +78,10 @@ class GigModel(db.Model):
     location = db.Column(db.String, nullable=False)
     promoter_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     dj_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
 
     promoter = db.relationship('UserModel', foreign_keys='GigModel.promoter_id', backref='promote_gigs')
-    dj = db.relationship('UserModel', foreign_keys='GigModel.dj_id', backref='dj_gigs')
+    # dj = db.relationship('UserModel', foreign_keys='GigModel.dj_id', backref='dj_gigs')
 
     def __repr__(self):
         return f"<Gig: {self.username}>"
