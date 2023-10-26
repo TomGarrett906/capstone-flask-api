@@ -35,7 +35,7 @@ class Gigs(MethodView):
             return gig
         except IntegrityError as e:
             print(e)
-            abort(400, message="Invalid User Id")
+            abort(400, message="Invalid Gig Id")
 
  
 
@@ -51,7 +51,7 @@ class Gigs(MethodView):
 
 
 
-@bp.route('/<user_id>')
+@bp.route('/<gig_id>')
 class Gig(MethodView):  
 
 
@@ -74,12 +74,21 @@ class Gig(MethodView):
     @bp.response(200, GigSchema)
     def put(self, gig_data, gig_id):
         gig = GigModel.query.get(gig_id)
-        if gig and gig_data['body']:
-            user_id = get_jwt_identity()
-        if gig.user_id == user_id:
-                gig.body = gig_data['body']
+        current_user_id = get_jwt_identity()
+
+        if gig and "gig_name" in gig_data:
+            if gig.promoter_id == current_user_id:
+                gig.gig_name = gig_data['gig_name']
                 gig.save()
                 return gig
+            else:
+                abort(400, message="Unauthorized ID")
+        # if gig and gig_data['gig_name']:
+        #     username = get_jwt_identity()
+        # if gig.username == username:
+        #         gig.body = gig_data['gig_name']
+        #         gig.save()
+        #         return gig
         else:
             
             abort(400, message='Invalid Gig Data')
@@ -89,10 +98,10 @@ class Gig(MethodView):
 
     @jwt_required()
     def delete(self, gig_id):
-        user_id = get_jwt_identity()
+        current_user_id = get_jwt_identity()
         gig = GigModel.query.get(gig_id)
         if gig:
-            if gig.user_id == user_id:
+            if gig.promoter_id == current_user_id:
                 gig.delete()
                 return {'message' : 'Gig Deleted'}, 202
             abort(401, message='User doesn\'t have rights')
