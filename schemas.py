@@ -10,7 +10,7 @@ class UserSchema(Schema):
     role = fields.Str(required=True)
 
 class GigSchema(Schema):
-    gig_id = fields.Str(dump_only=True)
+    gig_id = fields.Int(dump_only=True)
     gig_name = fields.Str(required=True)
     description = fields.Str(required=True)
     date = fields.Date(required=True)
