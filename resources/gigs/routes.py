@@ -33,10 +33,11 @@ class Gigs(MethodView):
         try:
             gig.save()
             return gig
-        except IntegrityError:
+        except IntegrityError as e:
+            print(e)
             abort(400, message="Invalid User Id")
 
-
+ 
 
 
 
@@ -86,7 +87,7 @@ class Gig(MethodView):
 
 # DELETE GIG
 
-    #   @jwt_required()
+    @jwt_required()
     def delete(self, gig_id):
         user_id = get_jwt_identity()
         gig = GigModel.query.get(gig_id)

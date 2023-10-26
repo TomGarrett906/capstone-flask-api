@@ -26,16 +26,16 @@ class UserModel(db.Model):
     last_name = db.Column(db.String)   
     role = db.Column(db.String, nullable=False)
 
-    promoter_gigs = db.relationship('GigModel', foreign_keys='GigModel.promoter_id', backref='promoter_user')
+    # promoter_gigs = db.relationship('GigModel', foreign_keys='GigModel.promoter_id', backref='promoter_user')
     # dj_gigs = db.relationship('GigModel', foreign_keys='GigModel.dj_id', backref='dj_user')
     
-    role_type = db.relationship('UserModel', 
-        secondary=roles, 
-        primaryjoin = roles.c.promoter_id == user_id,
-        secondaryjoin = roles.c.dj_id == user_id,
-        backref = db.backref('roles', lazy='dynamic'),
-        lazy='dynamic' 
-  )
+#     role_type = db.relationship('UserModel', 
+#         secondary=roles, 
+#         primaryjoin = roles.c.promoter_id == user_id,
+#         secondaryjoin = roles.c.dj_id == user_id,
+#         backref = db.backref('roles', lazy='dynamic'),
+#         lazy='dynamic' 
+#   )
 
 
 
@@ -74,14 +74,16 @@ class GigModel(db.Model):
     gig_id = db.Column(db.Integer, primary_key=True)   
     gig_name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, nullable=False)
-    date = db.Column(db.String, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     location = db.Column(db.String, nullable=False)
-    promoter_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    dj_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
+    pay = db.Column(db.DECIMAL(10, 2), nullable=True)
+    promoter_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
+    dj_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
 
-    promoter = db.relationship('UserModel', foreign_keys='GigModel.promoter_id', backref='promote_gigs')
-    # dj = db.relationship('UserModel', foreign_keys='GigModel.dj_id', backref='dj_gigs')
+    # promoter_id = db.relationship('UserModel', foreign_keys='users.user_id', backref='promoter_id')
+    # dj_id = db.relationship('UserModel', foreign_keys='users.user_id', backref='dj_id')
+
+    # user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
 
     def __repr__(self):
         return f"<Gig: {self.username}>"

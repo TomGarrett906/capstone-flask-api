@@ -109,5 +109,60 @@ gigs = {
         "location": "Café Serenade",
         "promoter_id": 5,
         "dj_id": 6
-    }
+    },
+    '7': {
+    "gig_id": 7,
+    "gig_name": "Techno Rave",
+    "description": "An electrifying night of techno music",
+    "date": "2023-10-30",
+    "location": "Warehouse X",
+    "promoter_id": 2,
+    "dj_id": 4
+  },
+  '8': {
+    "gig_id": 8,
+    "gig_name": "Club Grooves",
+    "description": "Groovy beats and dancing all night",
+    "date": "2023-11-19",
+    "location": "Groove Central",
+    "promoter_id": 4,
+    "dj_id": 6
+  },
+  '9': {
+    "gig_id": 9,
+    "gig_name": "Beach Party Jam",
+    "description": "Sunny beach vibes with DJ sets",
+    "date": "2023-12-05",
+    "location": "Beach Resort",
+    "promoter_id": 6,
+    "dj_id": 2
+  },
+  '10': {
+    "gig_id": 10,
+    "gig_name": "Rap Battle Royale",
+    "description": "An epic rap battle competition",
+    "date": "2024-08-14",
+    "location": "Underground Arena",
+    "promoter_id": 2,
+    "dj_id": 4
+  },
+  '11': {
+    "gig_id": 11,
+    "gig_name": "Jazz in the Park",
+    "description": "Smooth jazz melodies in the park",
+    "date": "2024-09-25",
+    "location": "City Park",
+    "promoter_id": 4,
+    "dj_id": 6
+  },
+  '12': {
+    "gig_id": 12,
+    "gig_name": "Indie Music Fest",
+    "description": "Celebrating indie music talent",
+    "date": "2024-10-02",
+    "location": "Music Hall",
+    "promoter_id": 6,
+    "dj_id": 2
+  }
+
 }
