@@ -10,19 +10,17 @@ from .models import UserModel
 
 
 #-REGISTER-USER------------------------------- 
-@bp.route('/register')
-class Register(MethodView):
-    
-    @bp.arguments(UserSchema)
-    @bp.response(201, UserSchema)
-    def post(self, user_data):
-        user = UserModel()
-        user.from_dict(user_data)
-        try:
-            user.save()
-            return user_data
-        except IntegrityError:
-            abort(400, message="Username or Email already taken")
+@bp.post('/register')    
+@bp.arguments(UserSchema)
+@bp.response(201, UserSchema)
+def register(user_data):
+    user = UserModel()
+    user.from_dict(user_data)
+    try:
+        user.save()
+        return user_data
+    except IntegrityError:
+        abort(400, message="Username or Email already taken")
 
 
 

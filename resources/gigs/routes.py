@@ -15,7 +15,7 @@ class Gigs(MethodView):
 
 # SHOW ALL GIGS
 
-    @jwt_required()
+    # @jwt_required()
     @bp.response(200, GigSchema(many=True))
     def get(self):
          return GigModel.query.all()
