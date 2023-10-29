@@ -1,4 +1,5 @@
 from flask.views import MethodView
+from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
@@ -70,28 +71,25 @@ class Gig(MethodView):
 # UPDATE GIG
 
     @jwt_required()
-    @bp.arguments(GigSchema)
     @bp.response(200, GigSchema)
-    def put(self, gig_data, gig_id):
+    def put(self, gig_id):
         gig = GigModel.query.get(gig_id)
         current_user_id = get_jwt_identity()
 
-        if gig and "gig_name" in gig_data:
-            if gig.promoter_id == current_user_id:
-                gig.gig_name = gig_data['gig_name']
-                gig.save()
-                return gig
-            else:
-                abort(400, message="Unauthorized ID")
-        # if gig and gig_data['gig_name']:
-        #     username = get_jwt_identity()
-        # if gig.username == username:
-        #         gig.body = gig_data['gig_name']
-        #         gig.save()
-        #         return gig
-        else:
-            
-            abort(400, message='Invalid Gig Data')
+        if not gig:
+            abort(404, message="Gig not found")
+
+        if gig.promoter_id != current_user_id:
+            abort(403, message="Unauthorized access")
+
+        gig_data = request.json  # Assuming the updated data is sent in the request body as JSON
+
+        for field, value in gig_data.items():
+            if hasattr(gig, field):
+                setattr(gig, field, value)
+
+        gig.save()
+        return gig
 
 
 # DELETE GIG
