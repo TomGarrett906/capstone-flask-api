@@ -82,7 +82,7 @@ class Gig(MethodView):
         if gig.promoter_id != current_user_id:
             abort(403, message="Unauthorized access")
 
-        gig_data = request.json  # Assuming the updated data is sent in the request body as JSON
+        gig_data = request.json
 
         for field, value in gig_data.items():
             if hasattr(gig, field):
